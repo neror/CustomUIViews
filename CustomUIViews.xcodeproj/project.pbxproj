@@ -26,6 +26,10 @@
 		DF08E5041252A3BD000BC22B /* SimpleDrawRectController.m in Sources */ = {isa = PBXBuildFile; fileRef = DF08E5021252A3BD000BC22B /* SimpleDrawRectController.m */; };
 		DF08E5051252A3BD000BC22B /* SimpleDrawRectController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF08E5031252A3BD000BC22B /* SimpleDrawRectController.xib */; };
 		DF08E5081252A3CB000BC22B /* SimpleDrawRectView.m in Sources */ = {isa = PBXBuildFile; fileRef = DF08E5071252A3CB000BC22B /* SimpleDrawRectView.m */; };
+		DF2ADA761253EEC60013D412 /* ProgressBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = DF2ADA721253EEC60013D412 /* ProgressBarView.m */; };
+		DF2ADA771253EEC60013D412 /* ProgressBarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DF2ADA741253EEC60013D412 /* ProgressBarViewController.m */; };
+		DF2ADA781253EEC60013D412 /* ProgressBarViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DF2ADA751253EEC60013D412 /* ProgressBarViewController.xib */; };
+		DF2ADAA81253EF9C0013D412 /* ProgressBar.png in Resources */ = {isa = PBXBuildFile; fileRef = DF2ADAA71253EF9C0013D412 /* ProgressBar.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +63,12 @@
 		DF08E5031252A3BD000BC22B /* SimpleDrawRectController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = SimpleDrawRectController.xib; path = Classes/SimpleDrawRectController.xib; sourceTree = "<group>"; };
 		DF08E5061252A3CB000BC22B /* SimpleDrawRectView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SimpleDrawRectView.h; path = Classes/SimpleDrawRectView.h; sourceTree = "<group>"; };
 		DF08E5071252A3CB000BC22B /* SimpleDrawRectView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SimpleDrawRectView.m; path = Classes/SimpleDrawRectView.m; sourceTree = "<group>"; };
+		DF2ADA711253EEC60013D412 /* ProgressBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProgressBarView.h; path = Classes/ProgressBarView.h; sourceTree = "<group>"; };
+		DF2ADA721253EEC60013D412 /* ProgressBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProgressBarView.m; path = Classes/ProgressBarView.m; sourceTree = "<group>"; };
+		DF2ADA731253EEC60013D412 /* ProgressBarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProgressBarViewController.h; path = Classes/ProgressBarViewController.h; sourceTree = "<group>"; };
+		DF2ADA741253EEC60013D412 /* ProgressBarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProgressBarViewController.m; path = Classes/ProgressBarViewController.m; sourceTree = "<group>"; };
+		DF2ADA751253EEC60013D412 /* ProgressBarViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = ProgressBarViewController.xib; path = Classes/ProgressBarViewController.xib; sourceTree = "<group>"; };
+		DF2ADAA71253EF9C0013D412 /* ProgressBar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ProgressBar.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +108,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				DF2ADA6B1253EE9E0013D412 /* Progress Bar */,
 				DF08E4FB1252A382000BC22B /* Simple Draw Rect */,
 				DF08E36F12528689000BC22B /* Line Graph */,
 				DF08E2BD12526CEC000BC22B /* Bitmap Font Counter */,
@@ -122,6 +133,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				DF2ADAA71253EF9C0013D412 /* ProgressBar.png */,
 				DF08E2C712526D95000BC22B /* NumberStrip.png */,
 				28F335F01007B36200424DE2 /* RootViewController.xib */,
 				28AD735F0D9D9599002E5188 /* MainWindow.xib */,
@@ -175,6 +187,18 @@
 				DF08E5031252A3BD000BC22B /* SimpleDrawRectController.xib */,
 			);
 			name = "Simple Draw Rect";
+			sourceTree = "<group>";
+		};
+		DF2ADA6B1253EE9E0013D412 /* Progress Bar */ = {
+			isa = PBXGroup;
+			children = (
+				DF2ADA711253EEC60013D412 /* ProgressBarView.h */,
+				DF2ADA721253EEC60013D412 /* ProgressBarView.m */,
+				DF2ADA731253EEC60013D412 /* ProgressBarViewController.h */,
+				DF2ADA741253EEC60013D412 /* ProgressBarViewController.m */,
+				DF2ADA751253EEC60013D412 /* ProgressBarViewController.xib */,
+			);
+			name = "Progress Bar";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -233,6 +257,8 @@
 				DF08E2D512526EA7000BC22B /* BitmapFontCounterController.xib in Resources */,
 				DF08E374125286A7000BC22B /* LineGraphViewController.xib in Resources */,
 				DF08E5051252A3BD000BC22B /* SimpleDrawRectController.xib in Resources */,
+				DF2ADA781253EEC60013D412 /* ProgressBarViewController.xib in Resources */,
+				DF2ADAA81253EF9C0013D412 /* ProgressBar.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -252,6 +278,8 @@
 				DF08E38512528729000BC22B /* LineGraphView.m in Sources */,
 				DF08E5041252A3BD000BC22B /* SimpleDrawRectController.m in Sources */,
 				DF08E5081252A3CB000BC22B /* SimpleDrawRectView.m in Sources */,
+				DF2ADA761253EEC60013D412 /* ProgressBarView.m in Sources */,
+				DF2ADA771253EEC60013D412 /* ProgressBarViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,6 +1,7 @@
 #import "RootViewController.h"
 #import "BitmapFontCounterController.h"
 #import "LineGraphViewController.h"
+#import "ProgressBarViewController.h"
 #import "SimpleDrawRectController.h"
 
 @implementation RootViewController
@@ -13,10 +14,12 @@
   self.title = @"Custom Views";
   exampleClasses_ = [[NSArray alloc] initWithObjects:[SimpleDrawRectController class],
                                                      [BitmapFontCounterController class], 
+                                                     [ProgressBarViewController class], 
                                                      [LineGraphViewController class], 
                                                      nil];
   exampleNames_ = [[NSArray alloc] initWithObjects:@"Simple Draw Rect",
                                                    @"Bitmap Font Counter", 
+                                                   @"Progress Bar",
                                                    @"Line Graph",
                                                    nil];
 }
