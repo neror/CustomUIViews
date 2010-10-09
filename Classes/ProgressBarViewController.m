@@ -6,7 +6,7 @@
 @synthesize progressBar;
 
 - (void)updateProgress {
-  self.progressBar.progress = .75f;
+  self.progressBar.progress = (abs(arc4random()) % 100) / 100.f;
 }
 
 - (void)dealloc {

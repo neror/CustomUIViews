@@ -86,9 +86,10 @@
   
   animatePath.toValue = (id)thePath;
   animatePath.duration = .5f;
-  animatePath.fillMode = kCAFillModeBoth;
+  animatePath.fillMode = kCAFillModeForwards;
+  animatePath.removedOnCompletion = NO;
   animatePath.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-  [self.layer addAnimation:animatePath forKey:nil];
+  [self.layer addAnimation:animatePath forKey:@"lineAnimation"];
   [CATransaction commit];
 }  
 
