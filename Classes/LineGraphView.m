@@ -33,7 +33,7 @@
 
 - (void)dealloc {
   [self removeObserver:self forKeyPath:@"values"];
-  self.values = nil;
+  [values release];
   [super dealloc];
 }
 

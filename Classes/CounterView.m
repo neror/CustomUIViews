@@ -27,7 +27,7 @@ static const unichar kCharacterOffset = 48;
 }
 
 - (void)dealloc {
-  [digitLayers_ release], digitLayers_ = nil;
+  [digitLayers_ release];
   [super dealloc];
 }
 
