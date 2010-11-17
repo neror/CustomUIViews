@@ -1,9 +1,14 @@
 #import "LineGraphView.h"
 #import <QuartzCore/QuartzCore.h>
 
-@implementation LineGraphView
+@interface LineGraphView (Private)
 
-@synthesize values;
+- (CGPathRef)newPathFromValues:(NSArray *)theValues withZeroedY:(BOOL)zeroedY;
+- (void)animateGraphChange;
+
+@end
+
+@implementation LineGraphView
 
 + (Class)layerClass {
   return [CAShapeLayer class];
@@ -17,7 +22,6 @@
   theLayer.lineJoin = kCALineJoinRound;
   theLayer.strokeColor = [[UIColor blueColor] CGColor];
   theLayer.fillColor = nil;
-  [self addObserver:self forKeyPath:@"values" options:NSKeyValueObservingOptionNew context:nil];
 }
 
 - (id)initWithFrame:(CGRect)frame {
@@ -32,31 +36,37 @@
 }
 
 - (void)dealloc {
-  [self removeObserver:self forKeyPath:@"values"];
   [values release];
   [super dealloc];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-  if([keyPath isEqualToString:@"values"] && object == self) {
-    [self setNeedsLayout];
-  }
+#pragma mark -
+#pragma mark Attribute getters and setters
+
+- (NSArray *)values {
+  return [[values copy] autorelease];
 }
 
-- (CGPathRef)newPathFromValuesWithZeroedY:(BOOL)zeroedY {
-  if([self.values count]) {
+- (void)setValues:(NSArray *)newValues {
+  [values autorelease];
+  values = [newValues copy];
+  [self animateGraphChange];
+}
+
+- (CGPathRef)newPathFromValues:(NSArray *)theValues withZeroedY:(BOOL)zeroedY {
+  if([theValues count]) {
     CGRect insetRect = CGRectInset(self.bounds, 10.f, 0.f);
     
-    CGFloat pointXOffset = insetRect.size.width / ([self.values count] - 1);
+    CGFloat pointXOffset = insetRect.size.width / ([theValues count] - 1);
     CGFloat height = insetRect.size.height;
     CGFloat xOrigin = insetRect.origin.x;
-    CGFloat firstValue = [[self.values objectAtIndex:0] floatValue];
+    CGFloat firstValue = [[theValues objectAtIndex:0] floatValue];
     
     CGMutablePathRef line = CGPathCreateMutable();
     CGFloat nextY = zeroedY ? 0 : (height * firstValue);
     CGPathMoveToPoint(line, NULL, xOrigin, height - nextY);
-    for (int i = 1; i < [self.values count]; i++) {
-      CGFloat value = [[self.values objectAtIndex:i] floatValue];
+    for (int i = 1; i < [theValues count]; i++) {
+      CGFloat value = [[theValues objectAtIndex:i] floatValue];
       nextY = zeroedY ? 0 : (height * value);
       CGPathAddLineToPoint(line, NULL, xOrigin + (i * pointXOffset), height - nextY);
     }
@@ -65,23 +75,20 @@
   return nil;
 }
 
-- (void)layoutSubviews {
+
+- (void)animateGraphChange {
   CAShapeLayer *theLayer = (CAShapeLayer *)self.layer;
   
-  CGPathRef thePath = [self newPathFromValuesWithZeroedY:NO];
+  CGPathRef thePath = [self newPathFromValues:self.values withZeroedY:NO];
   
-  [CATransaction begin];
-  [CATransaction setCompletionBlock:^{
-    theLayer.path = thePath;
-    CGPathRelease(thePath);
-  }];
-  [CATransaction setDisableActions:YES];
   CABasicAnimation *animatePath = [CABasicAnimation animationWithKeyPath:@"path"];
-
+  
   if(!theLayer.path) {
-    CGPathRef zeroedPath = [self newPathFromValuesWithZeroedY:YES];  
+    CGPathRef zeroedPath = [self newPathFromValues:self.values withZeroedY:YES];  
     animatePath.fromValue = (id)zeroedPath;
     CGPathRelease(zeroedPath);
+  } else {
+    animatePath.fromValue = (id)[[theLayer presentationLayer] path];
   }
   
   animatePath.toValue = (id)thePath;
@@ -89,9 +96,10 @@
   animatePath.fillMode = kCAFillModeForwards;
   animatePath.removedOnCompletion = NO;
   animatePath.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-  [self.layer addAnimation:animatePath forKey:@"lineAnimation"];
-  [CATransaction commit];
-}  
-
+  
+  theLayer.path = thePath;
+  [theLayer addAnimation:animatePath forKey:@"path"];
+  CGPathRelease(thePath);
+}
 
 @end

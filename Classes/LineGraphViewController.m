@@ -10,27 +10,12 @@
   self.title = @"Line Graph";
 }
 
-/*
-// Override to allow orientations other than the default portrait orientation.
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-*/
-
-- (void)viewDidUnload {
-  [super viewDidUnload];
-  // Release any retained subviews of the main view.
-  // e.g. self.myOutlet = nil;
-}
-
 - (void)viewDidAppear:(BOOL)animated {
   [self updateValues];
 }
 
-
 - (void)dealloc {
-  self.lineGraph = nil;
+  [lineGraph release];
   [super dealloc];
 }
 
