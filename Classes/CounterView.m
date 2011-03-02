@@ -16,7 +16,8 @@ static const unichar kCharacterOffset = 48;
 }
 
 - (id)initWithNumber:(double)num {
-  if (self = [super initWithFrame:CGRectMake(0.f, 0.f, kDigitWidth, kDigitHeight)]) {
+  self = [super initWithFrame:CGRectMake(0.f, 0.f, kDigitWidth, kDigitHeight)];
+  if (self) {
     [self setupWithNumber:num];
   }
   return self;
