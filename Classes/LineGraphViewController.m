@@ -15,7 +15,7 @@
 }
 
 - (void)dealloc {
-  [lineGraph release];
+  [lineGraph release], lineGraph = nil;
   [super dealloc];
 }
 

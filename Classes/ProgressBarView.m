@@ -1,14 +1,21 @@
 #import "ProgressBarView.h"
 
+@interface ProgressBarView() {
+  CAGradientLayer *progressBar_;
+  CGFloat progress_;
+}
+
+- (void)setupLayers;
+
+@end
+
 @implementation ProgressBarView
 
-@synthesize progress;
+#pragma mark - Object Lifecycle / Memory management
 
-- (void)setupLayers {
-  self.progress = 1.f;
-  progressBar_ = [[CAGradientLayer alloc] init];
-  [self.layer addSublayer:progressBar_];
-  [self addObserver:self forKeyPath:@"progress" options:NSKeyValueObservingOptionNew context:nil];
+- (void)dealloc {
+  [progressBar_ release];
+  [super dealloc];
 }
 
 - (id)initWithFrame:(CGRect)frame {
@@ -22,11 +29,13 @@
   [self setupLayers];
 }
 
-- (void)dealloc {
-  [progressBar_ release];
-  [self removeObserver:self forKeyPath:@"progress"];
-  [super dealloc];
+- (void)setupLayers {
+  self.progress = 1.f;
+  progressBar_ = [[CAGradientLayer alloc] init];
+  [self.layer addSublayer:progressBar_];
 }
+
+#pragma mark - Drawing and Layout
 
 - (void)layoutSubviews {
   self.backgroundColor = [UIColor clearColor];
@@ -50,10 +59,15 @@
   progressBar_.bounds = progressBounds;
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-  if([keyPath isEqualToString:@"progress"]) {
-    [self setNeedsLayout];
-  }
+#pragma mark - Getters and Setters
+
+- (CGFloat)progress {
+  return progress_;
+}
+
+- (void)setProgress:(CGFloat)progress {
+  progress_ = progress;
+  [self setNeedsLayout];
 }
 
 @end

@@ -1,9 +1,11 @@
 #import "LineGraphView.h"
 #import <QuartzCore/QuartzCore.h>
 
-@interface LineGraphView (Private)
+@interface LineGraphView() {
+  NSArray *values_;
+}
 
-- (CGPathRef)newPathFromValues:(NSArray *)theValues withZeroedY:(BOOL)zeroedY;
+- (UIBezierPath *)bezierPathWithValues:(NSArray *)theValues zeroedY:(BOOL)zeroedY;
 - (void)animateGraphChange;
 
 @end
@@ -36,7 +38,7 @@
 }
 
 - (void)dealloc {
-  [values release];
+  [values_ release], values_ = nil;
   [super dealloc];
 }
 
@@ -44,16 +46,16 @@
 #pragma mark Attribute getters and setters
 
 - (NSArray *)values {
-  return [[values copy] autorelease];
+  return [[values_ copy] autorelease];
 }
 
 - (void)setValues:(NSArray *)newValues {
-  [values autorelease];
-  values = [newValues copy];
+  [values_ autorelease];
+  values_ = [newValues copy];
   [self animateGraphChange];
 }
 
-- (CGPathRef)newPathFromValues:(NSArray *)theValues withZeroedY:(BOOL)zeroedY {
+- (UIBezierPath *)bezierPathWithValues:(NSArray *)theValues zeroedY:(BOOL)zeroedY {
   if([theValues count]) {
     CGRect insetRect = CGRectInset(self.bounds, 10.f, 0.f);
     
@@ -62,15 +64,17 @@
     CGFloat xOrigin = insetRect.origin.x;
     CGFloat firstValue = [[theValues objectAtIndex:0] floatValue];
     
-    CGMutablePathRef line = CGPathCreateMutable();
+    UIBezierPath *path = [UIBezierPath bezierPath];
+    
     CGFloat nextY = zeroedY ? 0 : (height * firstValue);
-    CGPathMoveToPoint(line, NULL, xOrigin, height - nextY);
+    [path moveToPoint:CGPointMake(xOrigin, height - nextY)];
+    
     for (int i = 1; i < [theValues count]; i++) {
       CGFloat value = [[theValues objectAtIndex:i] floatValue];
       nextY = zeroedY ? 0 : (height * value);
-      CGPathAddLineToPoint(line, NULL, xOrigin + (i * pointXOffset), height - nextY);
+      [path addLineToPoint:CGPointMake(xOrigin + (i * pointXOffset), height - nextY)];
     }
-    return line;
+    return path;
   }
   return nil;
 }
@@ -79,27 +83,25 @@
 - (void)animateGraphChange {
   CAShapeLayer *theLayer = (CAShapeLayer *)self.layer;
   
-  CGPathRef thePath = [self newPathFromValues:self.values withZeroedY:NO];
+  UIBezierPath *thePath = [self bezierPathWithValues:self.values zeroedY:NO];
   
   CABasicAnimation *animatePath = [CABasicAnimation animationWithKeyPath:@"path"];
   
   if(!theLayer.path) {
-    CGPathRef zeroedPath = [self newPathFromValues:self.values withZeroedY:YES];  
-    animatePath.fromValue = (id)zeroedPath;
-    CGPathRelease(zeroedPath);
+    UIBezierPath *zeroedPath = [self bezierPathWithValues:self.values zeroedY:YES];  
+    animatePath.fromValue = (id)[zeroedPath CGPath];
   } else {
     animatePath.fromValue = (id)[[theLayer presentationLayer] path];
   }
   
-  animatePath.toValue = (id)thePath;
+  animatePath.toValue = (id)[thePath CGPath];
   animatePath.duration = .5f;
   animatePath.fillMode = kCAFillModeForwards;
   animatePath.removedOnCompletion = NO;
   animatePath.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
   
-  theLayer.path = thePath;
+  theLayer.path = [thePath CGPath];
   [theLayer addAnimation:animatePath forKey:@"path"];
-  CGPathRelease(thePath);
 }
 
 @end

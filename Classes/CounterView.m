@@ -1,14 +1,31 @@
 #import "CounterView.h"
 
+
+
+static const NSInteger kDigitCount = 11;
 static const CGFloat kDigitWidth = 32.f;
 static const CGFloat kDigitHeight = 26.f;
 static const unichar kCharacterOffset = 48;
 
+#define kNormalizedDigitHeight (1.f / (CGFloat)kDigitCount)
+
+@interface CounterView() {
+  double number_;
+  NSMutableArray *digitLayers_;
+}
+
+- (void)setupWithNumber:(double)num;
+- (CALayer *)layerForDigitAtIndex:(NSUInteger)index;
+
+@end
+
 @implementation CounterView
 
-- (void)setupWithNumber:(double)num {
-  digitLayers_ = [[NSMutableArray alloc] init];
-  [self setNumber:num];
+#pragma mark - Object Lifecycle / Memory management
+
+- (void)dealloc {
+  [digitLayers_ release], digitLayers_ = nil;
+  [super dealloc];
 }
 
 - (id)initWithFrame:(CGRect)theFrame {
@@ -23,18 +40,29 @@ static const unichar kCharacterOffset = 48;
   return self;
 }
 
+- (void)setupWithNumber:(double)num {
+  digitLayers_ = [[NSMutableArray alloc] init];
+  [self setNumber:num];
+}
+
+#pragma mark - View Lifecycle
+
 - (void)awakeFromNib {
   [self setupWithNumber:0];
 }
 
-- (void)dealloc {
-  [digitLayers_ release];
-  [super dealloc];
-}
+#pragma mark - Getters and Setters
 
 - (double)number {
   return number_;
 }
+
+- (void)setNumber:(double)num {
+  number_ = num;
+  [self setNeedsLayout];
+}
+
+#pragma mark - Layout and Drawing
 
 - (void)layoutSubviews {
   [digitLayers_ makeObjectsPerformSelector:@selector(removeFromSuperlayer)];
@@ -46,19 +74,23 @@ static const unichar kCharacterOffset = 48;
   for(NSUInteger i = 0; i < count; i++) {
     CALayer *theLayer = [self layerForDigitAtIndex:i];
     int theNumber = (int)([numberString characterAtIndex:i] - kCharacterOffset);
-    if(theNumber < 0) {
-      theNumber = 10;
-    }
-    CGFloat height = 1.f/11.f;
-    CGFloat width = 1.f;
-    CGRect contentsRect = CGRectMake(0.f, theNumber * height, width, height);
     
+    BOOL isNegativeSymbol = theNumber < 0;
+    CGFloat contentOffsetY;
+    if(isNegativeSymbol) {
+      contentOffsetY = kNormalizedDigitHeight * 10.f;
+    } else {
+      contentOffsetY = kNormalizedDigitHeight * (CGFloat)theNumber;
+    }
+
     [CATransaction begin];
     [CATransaction setDisableActions:YES];
     theLayer.frame = CGRectMake(kDigitWidth * i, 0.f, kDigitWidth, kDigitHeight);
 
     [CATransaction begin];
-    [CATransaction setDisableActions:(theNumber == 10)];
+    [CATransaction setDisableActions:isNegativeSymbol];
+    CGRect contentsRect = theLayer.contentsRect;
+    contentsRect.origin.y = contentOffsetY;
     theLayer.contentsRect = contentsRect;
     [CATransaction commit];
     
@@ -66,11 +98,6 @@ static const unichar kCharacterOffset = 48;
     
     [self.layer addSublayer:theLayer];
   }  
-}
-
-- (void)setNumber:(double)num {
-  number_ = num;
-  [self setNeedsLayout];
 }
 
 - (CALayer *)layerForDigitAtIndex:(NSUInteger)index {
@@ -85,10 +112,7 @@ static const unichar kCharacterOffset = 48;
     theLayer.contentsGravity = kCAGravityCenter;
     theLayer.contents = (id)[[UIImage imageNamed:@"NumberStrip.png"] CGImage];
     
-    CGFloat height = 1.f/11.f;
-    //CGFloat width = kDigitWidth;
-    CGFloat width = 1.f;
-    theLayer.contentsRect = CGRectMake(0.f, height, width, height);
+    theLayer.contentsRect = CGRectMake(0.f, kNormalizedDigitHeight, 1.f, kNormalizedDigitHeight);
     
     [digitLayers_ insertObject:theLayer atIndex:index];
   }
